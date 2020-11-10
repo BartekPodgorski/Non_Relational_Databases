@@ -1,0 +1,147 @@
+:use system
+CREATE DATABASE project
+:use project
+
+CREATE (n:STATION {city:'Gdynia', maxPeoplePerDay:50000 , maxTrainPerDay:4000 , amountOfPlatforms:7 , ticketOffice:'TRUE' , covidZone:'RED', avgCustomerGrade:7 })
+CREATE (n:STATION {city:'Gdansk', maxPeoplePerDay:60000 , maxTrainPerDay:4800 , amountOfPlatforms:8 , ticketOffice:'TRUE' , covidZone:'RED', avgCustomerGrade:6 })
+CREATE (n:STATION {city:'Sopot', maxPeoplePerDay:20000 , maxTrainPerDay:1600 , amountOfPlatforms:4 , ticketOffice:'TRUE' , covidZone:'RED', avgCustomerGrade:8 })
+CREATE (n:STATION {city:'Wejherowo', maxPeoplePerDay:21000 , maxTrainPerDay:1700 , amountOfPlatforms:4 , ticketOffice:'TRUE' , covidZone:'YELLOW', avgCustomerGrade:5 })
+CREATE (n:STATION {city:'Lebork', maxPeoplePerDay:7000 , maxTrainPerDay:800 , amountOfPlatforms:2 , ticketOffice:'FALSE' , covidZone:'YELLOW', avgCustomerGrade:4 })
+CREATE (n:STATION {city:'Slupsk', maxPeoplePerDay:4000 , maxTrainPerDay:600 , amountOfPlatforms:2 , ticketOffice:'TRUE' , covidZone:'RED', avgCustomerGrade:6 })
+CREATE (n:STATION {city:'Chojnice', maxPeoplePerDay:2000 , maxTrainPerDay:300 , amountOfPlatforms:2 , ticketOffice:'TRUE' , covidZone:'YELLOW', avgCustomerGrade:5 })
+CREATE (n:STATION {city:'Koscierzyna', maxPeoplePerDay:3000 , maxTrainPerDay:500 , amountOfPlatforms:2 , ticketOffice:'FALSE' , covidZone:'YELLOW', avgCustomerGrade:3 })
+CREATE (n:STATION {city:'Bytow', maxPeoplePerDay:2500 , maxTrainPerDay:450 , amountOfPlatforms:2 , ticketOffice:'FALSE' , covidZone:'YELLOW', avgCustomerGrade:6 })
+CREATE (n:STATION {city:'Tczew', maxPeoplePerDay:9000 , maxTrainPerDay:900 , amountOfPlatforms:4 , ticketOffice:'TRUE' , covidZone:'RED', avgCustomerGrade:7 })
+
+#relations
+Z Tczewa
+
+MATCH (n {city:'Tczew'}), (m {city:'Gdansk'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:30 , maxPassengers:200 , trainType:'NORMAL' , ticketPrice:6 , avgCustomerGrade:8, distance:40}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Tczew'}), (m {city:'Gdynia'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:40 , maxPassengers:300 , trainType:'EXPRESS' , ticketPrice:12 , avgCustomerGrade:9, distance:70}]->(m) 
+RETURN m,n
+
+Z Gdansk
+
+MATCH (n {city:'Gdansk'}), (m {city:'Tczew'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:35 , maxPassengers:200 , trainType:'NORMAL' , ticketPrice:6 , avgCustomerGrade:7, distance:40}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Gdansk'}), (m {city:'Bytow'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:90 , maxPassengers:150 , trainType:'NORMAL' , ticketPrice:28 , avgCustomerGrade:6, distance:106}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Gdansk'}), (m {city:'Koscierzyna'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:60 , maxPassengers:150 , trainType:'NORMAL' , ticketPrice:14 , avgCustomerGrade:7, distance:60}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Gdansk'}), (m {city:'Sopot'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:10 , maxPassengers:200 , trainType:'NORMAL' , ticketPrice:3 , avgCustomerGrade:8, distance:15}]->(m) 
+RETURN m,n
+
+Z SOPOT
+
+MATCH (n {city:'Sopot'}), (m {city:'Gdansk'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:9 , maxPassengers:200 , trainType:'NORMAL' , ticketPrice:3 , avgCustomerGrade:8, distance:15}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Sopot'}), (m {city:'Gdynia'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:7 , maxPassengers:200 , trainType:'NORMAL' , ticketPrice:3 , avgCustomerGrade:8, distance:10}]->(m) 
+RETURN m,n
+
+Z Gdynia
+
+MATCH (n {city:'Gdynia'}), (m {city:'Sopot'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:8 , maxPassengers:200 , trainType:'NORMAL' , ticketPrice:3 , avgCustomerGrade:8, distance:10}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Gdynia'}), (m {city:'Koscierzyna'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:70 , maxPassengers:150 , trainType:'NORMAL' , ticketPrice:14 , avgCustomerGrade:6, distance:75}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Gdynia'}), (m {city:'Tczew'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:39 , maxPassengers:300 , trainType:'EXPRESS' , ticketPrice:12 , avgCustomerGrade:9, distance:70}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Gdynia'}), (m {city:'Wejherowo'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:40 , maxPassengers:300 , trainType:'NORMAL' , ticketPrice:6 , avgCustomerGrade:3, distance:30}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Gdynia'}), (m {city:'Slupsk'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:92 , maxPassengers:200 , trainType:'EXPRESS' , ticketPrice:46 , avgCustomerGrade:9, distance:109}]->(m) 
+RETURN m,n
+
+Z weja
+
+MATCH (n {city:'Wejherowo'}), (m {city:'Gdynia'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:42 , maxPassengers:300 , trainType:'NORMAL' , ticketPrice:6 , avgCustomerGrade:3, distance:30}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Wejherowo'}), (m {city:'Lebork'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:34 , maxPassengers:250 , trainType:'NORMAL' , ticketPrice:7 , avgCustomerGrade:6, distance:35}]->(m) 
+RETURN m,n
+
+Z lebork
+
+MATCH (n {city:'Lebork'}), (m {city:'Wejherowo'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:32 , maxPassengers:250 , trainType:'NORMAL' , ticketPrice:7 , avgCustomerGrade:6, distance:35}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Lebork'}), (m {city:'Slupsk'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:43 , maxPassengers:250 , trainType:'NORMAL' , ticketPrice:10 , avgCustomerGrade:6, distance:52}]->(m) 
+RETURN m,n
+
+Z Slupsk
+
+MATCH (n {city:'Slupsk'}), (m {city:'Gdynia'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:89 , maxPassengers:200 , trainType:'EXPRESS' , ticketPrice:46 , avgCustomerGrade:9, distance:109}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Slupsk'}), (m {city:'Lebork'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:45 , maxPassengers:250 , trainType:'NORMAL' , ticketPrice:10 , avgCustomerGrade:6, distance:52}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Slupsk'}), (m {city:'Chojnice'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:120 , maxPassengers:150 , trainType:'NORMAL' , ticketPrice:58 , avgCustomerGrade:5, distance:116}]->(m) 
+RETURN m,n
+
+Z Chojnice
+
+MATCH (n {city:'Chojnice'}), (m {city:'Slupsk'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:110 , maxPassengers:150 , trainType:'NORMAL' , ticketPrice:58 , avgCustomerGrade:5, distance:116}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Chojnice'}), (m {city:'Koscierzyna'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:70 , maxPassengers:150 , trainType:'NORMAL' , ticketPrice:27 , avgCustomerGrade:5, distance:65}]->(m) 
+RETURN m,n
+
+Z Koscierzyna
+
+MATCH (n {city:'Koscierzyna'}), (m {city:'Chojnice'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:76 , maxPassengers:150 , trainType:'NORMAL' , ticketPrice:27 , avgCustomerGrade:5, distance:65}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Koscierzyna'}), (m {city:'Gdansk'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:64 , maxPassengers:150 , trainType:'NORMAL' , ticketPrice:14 , avgCustomerGrade:7, distance:60}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Koscierzyna'}), (m {city:'Gdynia'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:69 , maxPassengers:150 , trainType:'NORMAL' , ticketPrice:14 , avgCustomerGrade:6, distance:75}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Koscierzyna'}), (m {city:'Bytow'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:36 , maxPassengers:150 , trainType:'NORMAL' , ticketPrice:10 , avgCustomerGrade:8, distance:38}]->(m) 
+RETURN m,n
+
+Z Bytow
+
+MATCH (n {city:'Bytow'}), (m {city:'Koscierzyna'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:35 , maxPassengers:150 , trainType:'NORMAL' , ticketPrice:10 , avgCustomerGrade:8, distance:38}]->(m) 
+RETURN m,n
+
+MATCH (n {city:'Bytow'}), (m {city:'Gdansk'}) 
+CREATE (n)-[:TRAIN_GO_TO {time:93 , maxPassengers:150 , trainType:'NORMAL' , ticketPrice:28 , avgCustomerGrade:6, distance:106}]->(m) 
+RETURN m,n

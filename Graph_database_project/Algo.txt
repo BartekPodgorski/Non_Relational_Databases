@@ -1,0 +1,45 @@
+CALL gds.alpha.closeness.stream({
+  nodeProjection: 'STATION',
+  relationshipProjection: 'TRAIN_GO_TO'
+})
+YIELD nodeId, centrality
+RETURN gds.util.asNode(nodeId).city AS city, centrality
+ORDER BY centrality DESC
+
+Okresla ktore miasto jest najblizej ze wszystkich i w naszym case to Gdynia
+
+The Random Walk Theory
+
+MATCH (start:STATION {city:'Gdynia'})
+CALL gds.alpha.randomWalk.stream({
+  nodeProjection: '*',
+  relationshipProjection: {
+    LINKS: {
+      type: 'TRAIN_GO_TO',
+      orientation: 'UNDIRECTED'
+    }
+  },
+  start: id(start),
+  steps: 3,
+  walks: 1
+})
+YIELD nodeIds
+UNWIND nodeIds AS nodeId
+RETURN gds.util.asNode(nodeId).city AS city
+
+#Triangles
+CALL gds.triangleCount.stream('proj1')
+YIELD nodeId, triangleCount
+RETURN gds.util.asNode(nodeId).city AS name, triangleCount
+ORDER BY triangleCount DESC
+
+#local clustering coeficient
+CALL gds.localClusteringCoefficient.stream('proj1')
+YIELD nodeId, localClusteringCoefficient
+RETURN gds.util.asNode(nodeId).city AS name, localClusteringCoefficient
+ORDER BY localClusteringCoefficient DESC
+
+#average clusterring coefficient
+CALL gds.localClusteringCoefficient.stats('proj1')
+YIELD averageClusteringCoefficient, nodeCount
+

@@ -1,0 +1,53 @@
+1.List all the stations to which you can reach from Gdynia.
+match (:STATION {city:'Gdynia'})-[:TRAIN_GO_TO]->(n:STATION) 
+return n.city AS city_related_Gdynia 
+
+2.List cities that can be reached both from Gdynia and Gdansk.
+match(:STATION{city:'Gdynia'})-[:TRAIN_GO_TO]->(station)<-[:TRAIN_GO_TO]-(:STATION{city:'Gdansk'}) 
+RETURN station.city
+
+3.List all stations from which you can get to Wejherowo with the possibility of one change. 
+match (:STATION{city:'Wejherowo'})-[:TRAIN_GO_TO*1..2]->(station) 
+return distinct station.city
+
+4.Show the route with the least amount of changes from Tczew to Gdańsk. 
+match(tczew:STATION{city:'Tczew'}),(slupsk:STATION{city:'Slupsk'}), p = shortestPath((tczew)-[*]->(slupsk)) 
+return p
+
+5.Check which route is the most optimal.
+match(:STATION{city:'Tczew'})-[r:TRAIN_GO_TO]->(:STATION{city: "Gdynia"}), 
+(:STATION{city:'Tczew'})-[r1:TRAIN_GO_TO]->(:STATION{city:'Gdansk'})-[r2:TRAIN_GO_TO]->(:STATION{city:"Sopot"})-[r3:TRAIN_GO_TO]->(:STATION{city:"Gdynia"}) 
+return r.ticketPrice AS express_cost , r.time AS expressTime, r1.ticketPrice+r2.ticketPrice+r3.ticketPrice AS viaCity, r1.time+r2.time+r3.time AS cityTime 
+
+6.List those stations that have ticket offices, the number of maxPeoplePerDay more than 5000 and rank according to the ratings of the people (from best to lowest).
+match (n:STATION)
+where n.maxPeoplePerDay > 5000 
+AND n.ticketOffice = 'TRUE'
+return n.city, n.avgCustomerGrade
+ORDER BY n.avgCustomerGrade DESC
+
+7.List the city to which we can go from Gdynia with 1 change, not being in the red zone no closer than 100 km but the route should be shorter than 150 minutes
+match (:STATION{city:'Gdynia'})-[r1:TRAIN_GO_TO]->(n:STATION)-[r2:TRAIN_GO_TO]->(m:STATION)
+where r1.distance + r2.distance > 100
+AND r1.time + r2.time < 150
+AND NOT m.covidZone = 'RED'
+return n.city AS transferCity , m.city AS targetCity , r1.distance + r2.distance AS distance, r1.time + r2.time AS time
+ORDER BY distance
+limit 1
+
+8.Show all the routes that we can get from Tczew to Gdynia in up to three changes
+match p = (:STATION{city:'Gdynia'})-[:TRAIN_GO_TO*1..3]->(:STATION{city:'Tczew'}) 
+return p
+
+9.List the 5 most expensive sections of the route( per km).
+match (n:STATION)-[r:TRAIN_GO_TO]->(m:STATION)
+return n.city AS startStation, m.city AS finishStation, r.ticketPrice * r.maxPassengers / r.distance AS costOneKm
+ORDER BY costOneKm DESC
+limit 5
+
+10.List the three stations with cash registers the least number of connections .
+match p = (n:STATION)<-[:TRAIN_GO_TO]-(m:STATION) 
+where n.ticketOffice = 'TRUE'
+return n.city , count(p) AS amountOfTrack
+ORDER by amountOfTrack
+limit 3
